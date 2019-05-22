@@ -1,0 +1,43 @@
+doctype html
+html
+head
+    style.
+        table {
+            font-family: sans-serif;
+            font-size:15px;
+            color:#333333;
+            border: 1px solid black;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+        th {
+            border: 1px solid blue;
+            padding: 10px;
+            background-color: #dedede;
+        }
+        td {
+            border: 1px solid red;
+            padding: 10px;
+            background-color: #ffffff;
+        }
+ 
+body
+    h1 MongoDB Data using Jade engine
+    div
+        table.table.table-hover
+            thead
+                tr
+                    th ID
+                    th Name
+                    th City
+                    th State
+                    th Zip
+            tbody
+                each data in mongoData
+                    tr
+                        td=data.id
+                        td=data.name
+                        td=data.city
+                        td=data.state
+                        td=data.zip
+ 
