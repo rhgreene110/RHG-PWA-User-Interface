@@ -3,8 +3,9 @@ var debug = require('debug');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
-// var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session')
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -20,8 +21,18 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// use session to store the user info
+app.use(session({
+    secret: 'work hard', //session key, coul dbe any string
+    resave: true, //force to store the session into session store
+    saveUninitialized: false, //store undefined session into storage
+    cookie : {
+        maxAge : 1000 * 60 * 10, // 设置 session 的有效时间，单位毫秒
+    },
+}))
 
 app.use('/', routes);
 app.use('/users', users);

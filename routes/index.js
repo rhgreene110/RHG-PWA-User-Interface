@@ -5,8 +5,40 @@ var webpush = require('web-push');
 var request = require('request');
 
 /* GET home page. */
+/* GET home page. */
 router.get('/', function (req, res) {
-    res.render('index', { title: 'Express' });
+    if (req.session.userId) {
+        Hero.findById(req.session.userId)
+            .then(data => {
+                if (!data) {
+                    return res.render('error', {
+                        errmsg: err
+                    });
+                }
+                console.log('findOne success');
+                return res.render('index', {
+                    layout: 'layout',
+                    title: 'VIP',
+                    userprofiler: data.username
+                });
+            })
+            .catch(err => {
+                if (err.kind === 'ObjectId') {
+                    console.log(req.session.userId);
+                    return res.render('error', {
+                        errmsg: err
+                    });
+                }
+                return res.render('error', {
+                    errmsg: err
+                });
+            });
+    } else {
+        res.render('index', {
+            title: 'Express Sample App',
+            userprofiler: req.session.userId
+        });
+    }
 });
 
 router.get('/offline.html', function (req, res) {
@@ -63,15 +95,15 @@ router.post('/postfunction', function (req, res) {
         body: {
             name: "azure, this is from my PWA app"
         }
-    }, function(error, response, body) {
+    }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log("success");
             res.send(response.body);
-        } else if(error){
+        } else if (error) {
             console.log("error: " + error);
             res.send("failed to call function app" + error);
         }
-    }); 
+    });
 });
 
 var functionurl2 = "https://function-app-v2b.azurewebsites.net/api/RHG-PWA-HttpTrigger1?code=b9R1WbV2ME8ly1YaAd8dUqQ6AwVveJfFuT2Fzr0El2pfhbcgIhQeIQ==";
@@ -84,20 +116,22 @@ router.get('/postfunctionmongodb', function (req, res) {
         headers: {
             "content-type": "application/json",
         },
-        body: { }
-    }, function(error, response, body) {
+        body: {}
+    }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log("success");
             datas = response.body.res;
             console.log(datas);
             // res.send(datas);
-            res.render('MongoData', { mongoData: datas });
- 
-        } else if(error){
+            res.render('MongoData', {
+                mongoData: datas
+            });
+
+        } else if (error) {
             console.log("error: " + error);
             res.send("failed to call function app" + error);
         }
     });
 });
- 
+
 module.exports = router;

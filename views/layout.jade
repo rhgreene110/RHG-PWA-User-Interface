@@ -7,10 +7,14 @@ head
   script(src='/bootstrap/js/jquery-3.4.1.js')
   script(src='/bootstrap/js/jquery-3.3.1.slim.min.js')
   script(src='/bootstrap/js/bootstrap.min.js')
-  script(src='/bootstrap/js/popper.min.js')
-  script(src='/bootstrap/js/bootstrap.bundle.min.js')
   script(src='/bootstrap/js/jquery.dataTables.min.js')
   script(src='/bootstrap/js/dataTables.bootstrap4.min.js')
+  script(src='/bootstrap/js/popper.min.js')
+  script(src='/bootstrap/js/bootstrap.bundle.min.js')
+
+
+  script(src='/pwabuilder-sw-register.js')
+  link(rel='manifest', href='/manifest.json')
   
 body
   .container-fluid
@@ -23,7 +27,7 @@ body
           li.nav-item
             a.nav-link(href='/') Home
           li.nav-item
-            a.nav-link(href='/users') Users
+            a.nav-link(href='/users') MyProfile
         span
           div
             button.btn.btn-info(type='button', data-toggle='modal', data-target='#registerModal')
@@ -78,7 +82,7 @@ body
                                   option(value='Arizona') Arizona
                                   option(value='Georgia') Georgia
                   .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancle
                     button.btn.btn-primary(type='button', onclick="document.getElementById('register-record').submit();") Register
             
             button.btn.btn-dark(type='button', data-toggle='modal', data-target='#loginModal')
@@ -87,24 +91,25 @@ body
               .modal-dialog.modal-dialog-centered(role='document')
                 .modal-content
                   .modal-header
-                    h3#loginModalLabel.modal-title Login
+                    h3#loginModalLabel.modal-title Login In
                   .modal-body
-                    form(action='/', method='', id='login-record')
+                    form(action='/users/login/', method='POST', id='login-record')
                       .form-group.row
                           label.col-sm-3.col-form-label username:
                           .col-sm-9
-                              input.form-control(type='text', name='username', placeholder='not finished yet.....')
+                              input.form-control(type='text', name='username')
                       .form-group.row
                           label.col-sm-3.col-form-label password:
                           .col-sm-9
-                              input.form-control(type='password', name='password', placeholder='not finished yet.....')
-                      .form-group.row
-                          label.col-sm-3.col-form-label email:
-                          .col-sm-9
-                              input.form-control(type='text', name='email', placeholder='not finished yet.....')
+                              input.form-control(type='password', name='password')
+                      //- .form-group.row
+                      //-     label.col-sm-3.col-form-label email:
+                      //-     .col-sm-9
+                      //-         input.form-control(type='text', name='email', placeholder='not finished yet.....')
                   .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancle
                     button.btn.btn-primary(type='button', onclick="document.getElementById('login-record').submit();") Login
-  
+            form(action="/users/logout", method="GET")
+                button.btn.btn-primary.btn-sm(type="submit") LogOut
   .container-fluid
     block content
