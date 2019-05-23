@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var webpush = require('web-push');
 var request = require('request');
+var Hero = require('../config/database');
 
 /* GET home page. */
 /* GET home page. */
