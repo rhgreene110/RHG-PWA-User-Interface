@@ -1,4 +1,4 @@
-﻿doctype html
+doctype html
 html
 head
   title= title
@@ -31,7 +31,7 @@ body
         //-   | hello 
         span
           .btn-toolbar
-            button.btn.btn-outline-dark.btn-group(type='button', data-toggle='modal', data-target='#loginModal')
+            button#loginbuttom.btn.btn-outline-dark.btn-group(type='button', data-toggle='modal', data-target='#loginModal')
               | Login
             #loginModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='loginModalLabel', aria-hidden='true')
               .modal-dialog.modal-dialog-centered(role='document')
@@ -52,7 +52,7 @@ body
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancle
                     button.btn.btn-primary(type='button', onclick="document.getElementById('login-record').submit();") Login
             form(action="/users/logout", method="GET")
-                button.btn.btn-outline-primary.btn-group(type="submit") LogOut
+                button#logoutbuttom.btn.btn-outline-primary.btn-group.d-none(type="submit") LogOut
 
             button.btn.btn-outline-info.btn-group(type='button', data-toggle='modal', data-target='#registerModal')
               | Register
@@ -72,6 +72,10 @@ body
                           label.col-sm-4.col-form-label Password:
                           .col-sm-8
                               input#originpassword.form-control(type='password', name='password', placeholder='password')
+                              #passwordlength.d-none.invalid-feedback At least 8 characters
+                              #passwordnumber.d-none.invalid-feedback At least one number
+                              #passwordlower.d-none.invalid-feedback At least one letter
+                              #passwordupper.d-none.invalid-feedback At least one capital letter
                       .form-group.row
                           label.col-sm-4.col-form-label Confirm Password:
                           .col-sm-8
@@ -92,10 +96,6 @@ body
                           .col-md-4.mb-3
                             label.col-form-label Last_name:
                               input.form-control(type='text', name='last_name', placeholder='')
-                      .form-group.row
-                          label.col-sm-4.col-form-label Birthday:
-                          .col-sm-8
-                              input.form-control(type='date', name='day_of_birth', placeholder='')
                       .form-group.row
                           .col-md-4.mb-3
                               label.col-sm-4.col-form-label Country:
@@ -136,16 +136,12 @@ body
         $.post('/users/checkname', { username: val}, 
         function(data){
           if(data=='ok'){
-            $("#validatename").removeClass("is-invalid");
-            $("#validatename").addClass("is-valid");
-            $("#feedbackname").removeClass("invalid-feedback");
-            $("#feedbackname").addClass("valid-feedback");
+            $("#validatename").removeClass("is-invalid").addClass("is-valid");
+            $("#feedbackname").removeClass("invalid-feedback").addClass("valid-feedback");
             $("#feedbackname").html("username is valid");
           } else if( data=='no'){
-            $("#validatename").removeClass("is-valid");
-            $("#validatename").addClass("is-invalid");
-            $("#feedbackname").removeClass("valid-feedback");
-            $("#feedbackname").addClass("invalid-feedback");
+            $("#validatename").removeClass("is-valid").addClass("is-invalid");
+            $("#feedbackname").removeClass("valid-feedback").addClass("invalid-feedback");
             $("#feedbackname").html("username already exist");
           }
         })
@@ -155,16 +151,12 @@ body
     function checkPassword(val) {
       var password = $("#originpassword").val();
       if( password == val){
-        $("#validatepassword").removeClass("is-invalid");
-        $("#validatepassword").addClass("is-valid");
-        $("#feedbackvalidate").removeClass("invalid-feedback");
-        $("#feedbackvalidate").addClass("valid-feedback");
+        $("#validatepassword").removeClass("is-invalid").addClass("is-valid");
+        $("#feedbackvalidate").removeClass("invalid-feedback").addClass("valid-feedback");
         $("#feedbackvalidate").html("passowrd is valid");
       } else {
-        $("#validatepassword").removeClass("is-valid");
-        $("#validatepassword").addClass("is-invalid");
-        $("#feedbackvalidate").removeClass("valid-feedback");
-        $("#feedbackvalidate").addClass("invalid-feedback");
+        $("#validatepassword").removeClass("is-valid").addClass("is-invalid");
+        $("#feedbackvalidate").removeClass("valid-feedback").addClass("invalid-feedback");
         $("#feedbackvalidate").html("passowrd doesn't match!!");
       }
     }
@@ -173,16 +165,12 @@ body
       var email = $('#emailvalidate').val();
       if(email != null){
         if(isEmail(email)){
-          $("#emailvalidate").removeClass("is-invalid");
-          $("#emailvalidate").addClass("is-valid");
-          $("#feedbackemail").removeClass("invalid-feedback");
-          $("#feedbackemail").addClass("valid-feedback");
+          $("#emailvalidate").removeClass("is-invalid").addClass("is-valid");
+          $("#feedbackemail").removeClass("invalid-feedback").addClass("valid-feedback");
           $("#feedbackemail").html("email is valid");
         } else {
-          $("#emailvalidate").removeClass("is-valid");
-          $("#emailvalidate").addClass("is-invalid");
-          $("#feedbackemail").removeClass("ivalid-feedback");
-          $("#feedbackemail").addClass("invalid-feedback");
+          $("#emailvalidate").removeClass("is-valid").addClass("is-invalid");
+          $("#feedbackemail").removeClass("ivalid-feedback").addClass("invalid-feedback");
           $("#feedbackemail").html("invalid email format");
         }
       }
@@ -192,3 +180,68 @@ body
       var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       return regex.test(email);
     }
+
+    $(document).ready(function() {
+      //login and logout button
+      if('#{loggedIn}'){
+        console.log('loggedin');
+        $('#loginbuttom').removeClass('d-block').addClass('d-none');
+        $('#logoutbuttom').removeClass('d-none').addClass('d-block');
+      } else {
+        console.log('not login');
+        $('#loginbuttom').removeClass('d-none').addClass('d-block');
+        $('#logoutbuttom').removeClass('d-block').addClass('d-none');
+      }
+      
+
+      // password strengthen
+      $('#originpassword').keyup(function() {
+        var val = $('#originpassword').val();
+        // is-validate length
+        if(val.length >= 8) {
+          $('#passwordlength').removeClass('invalid-feedback').addClass('valid-feedback');
+        } else {
+          $('#passwordlength').removeClass('valid-feedback').addClass('invalid-feedback');     
+        }
+
+        // is-validate numbers
+        var numbers = /[0-9]/g;
+        if(val.match(numbers)) {  
+          $('#passwordnumber').removeClass('invalid-feedback').addClass('valid-feedback');
+        } else {
+          $('#passwordnumber').removeClass('valid-feedback').addClass('invalid-feedback');
+        }
+
+        // is-validate lowercase letters
+        var lowerCaseLetters = /[a-z]/g;
+        if(val.match(lowerCaseLetters)) {  
+          $('#passwordlower').removeClass('invalid-feedback').addClass('valid-feedback');
+        } else {
+          $('#passwordlower').removeClass('valid-feedback').addClass('invalid-feedback');
+        }
+        
+        // is-validate capital letters
+        var upperCaseLetters = /[A-Z]/g;
+        if(val.match(upperCaseLetters)) {  
+          $('#passwordupper').removeClass('invalid-feedback').addClass('valid-feedback');
+        } else {
+          $('#passwordupper').removeClass('valid-feedback').addClass('invalid-feedback');
+        }
+
+        if(val.length >= 8 && val.match(numbers) && val.match(lowerCaseLetters) && val.match(upperCaseLetters)){
+          $('#originpassword').removeClass("is-invalid").addClass("is-valid");
+        } else {
+          $('#originpassword').removeClass("is-valid").addClass("is-invalid");
+        }
+      }).focus(function() {
+        $('#passwordlength').removeClass('d-none').addClass('d-block');
+        $('#passwordnumber').removeClass('d-none').addClass('d-block');
+        $('#passwordlower').removeClass('d-none').addClass('d-block');
+        $('#passwordupper').removeClass('d-none').addClass('d-block');
+      }).blur(function() {
+        $('#passwordlength').removeClass('d-block').addClass('d-none');
+        $('#passwordnumber').removeClass('d-block').addClass('d-none');
+        $('#passwordlower').removeClass('d-block').addClass('d-none');
+        $('#passwordupper').removeClass('d-block').addClass('d-none');
+      })
+    })

@@ -28,8 +28,6 @@ db.once('open', (callback) => {
 
 //create schema
 const heroSchema = new Schema({
-    name: String,
-    message: String,
     first_name: String,
     middle_initial: String,
     last_name: String,

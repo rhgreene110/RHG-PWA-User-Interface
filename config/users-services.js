@@ -131,7 +131,7 @@ exports.userlogin = (req, res) => {
                 // let userProfiler = JSON.parse(JSON.stringify(data));
                 // console.log("jsonobj:" + userProfiler[0]._id);
                 req.session.userId = data._id;
-
+                req.session.loggedIn = true;
                 updateactivity(data._id, logindatetime, ip, os, number);
 
                 // redirect to home page after success login

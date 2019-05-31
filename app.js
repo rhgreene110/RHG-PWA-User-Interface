@@ -13,6 +13,22 @@ var users = require('./routes/users');
 
 var app = express();
 
+
+// use session to store the user info
+app.use(session({
+    secret: 'work hard', //session key, coul dbe any string
+    resave: true, //force to store the session into session store
+    saveUninitialized: false, //store undefined session into storage
+    cookie: {
+        maxAge: 1000 * 60 * 10, // 设置 session 的有效时间，单位毫秒
+    },
+}))
+
+app.use(function (req, res, next) {
+    res.locals.loggedIn = req.session.loggedIn;
+    next();
+});
+
 // view engine setup
 // this will detect jade files under views folder.
 app.set('views', path.join(__dirname, 'views'));
@@ -22,21 +38,12 @@ app.set('view engine', 'jade');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 // cookieParser not required because we are keeping the session
 // app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// use session to store the user info
-app.use(session({
-    secret: 'work hard', //session key, coul dbe any string
-    resave: true, //force to store the session into session store
-    saveUninitialized: false, //store undefined session into storage
-    cookie : {    
-        maxAge: 1000 * 60 * 10, // 设置 session 的有效时间，单位毫秒    // this is for session lifetime in milliseconds
-                                                                    // After 10 minutes they logged out automatically  
-    },
-}))
 
 app.use('/', routes);
 app.use('/users', users);
