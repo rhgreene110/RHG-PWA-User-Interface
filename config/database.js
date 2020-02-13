@@ -7,6 +7,8 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 //Set up default mongoose connection
+// If database is local it's in .env file
+// If database is azure it's in APPLICATION SETTINGS in azure world
 var mongoDBurl = process.env.MONGODB_CONNECTION;
 mongoose.connect(mongoDBurl, { useNewUrlParser: true });
 
